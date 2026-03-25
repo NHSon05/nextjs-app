@@ -129,6 +129,28 @@
   }
 }
 
-h1,h2,h3 {
-  @apply text-red-500;
+.limelight-regular {
+  font-family: var(--font-limelight), sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Abril Fatface */
+.abril-fatface-regular {
+  font-family: var(--font-abril), serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Google Sans Flex (Dựa theo cấu trúc ảnh bạn gửi) */
+.google-sans-flex-regular {
+  font-family: var(--font-google-sans-flex), sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 500; /* Bạn có thể thay đổi giá trị từ 1 đến 1000 */
+  font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "ROND" 0;
 }
