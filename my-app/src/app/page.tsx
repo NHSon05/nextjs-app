@@ -1,10 +1,10 @@
-import Image from 'next/image'
-import Header from './Header'
-export default function Page() {
+import { Button } from "@/components/ui/button";
+
+export default function Home() {
   return (
-    <div>
-      <Header/>
-      <Image src="/profile.png" alt="Profile" width={100} height={100} />
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark">
+      <Button>Hello World</Button>
+      <h1>Hihi</h1>
     </div>
-  )
+  );
 }
