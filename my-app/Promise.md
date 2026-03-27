@@ -73,3 +73,64 @@ getData(){
 - Scope: Ở bước cuối cùng `(.then((z) =>....))` không thể truy cập tới biến x
 - Cú pháp rườm rà.
 - Khó debug
+
+## Promise Chaining
+
+Rất nhiều người mới bắt đầu mắc sai lầm khi lồng những lời hứa vào bên trong một lời promise.
+
+```javascript
+const promise1 = new Promise((resolve, reject) => {
+  resolve("Promise1 resolved");
+});
+const promise2 = new Promise((resolve, reject) => {
+  resolve("Promise2 resolve");
+});
+const promise3 = new Promise((resolve, reject) => {
+  resolve("Promise3 resolve");
+});
+promise1
+  .then((data) => {
+    console.log(data); // Promise1 resolved
+    promise2
+      .then((data) => {
+        console.log(data); // Promise2 resolved
+        promise3
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.log(error); // Promise3 rejected
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  })
+  .catch((error) => {
+    console.log(error);
+  });
+```
+
+**Promise All**
+Input: 1 mảng các promise
+Output: Promise mới thực hiện khi tất cả các promise đã resolve hoặc reject ngay khi 1 trong các promise trong mảng reject.
+
+Ví dụ
+
+```javascript
+const Promise1 = new Promise((resolved, rejected) => {
+  setTimeout =
+    (() => {
+      resolved("Promise 1 đã giải quyết");
+    },
+    2000);
+});
+const Promise2 = new Promise((resolved, rejected) => {
+  setTimeout(() => {
+    resolved("Promise2 đã resolved");
+  }, 1500);
+});
+Promise.all([promise1, promise2])
+  .then((data) => console.log(data[0], data[1]))
+  .catch((error) => console.log(error));
+```
