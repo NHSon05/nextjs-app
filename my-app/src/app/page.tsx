@@ -1,14 +1,10 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark google-sans-flex-regular">
-      <Image
-        src='/images/legal.jpg'
-        alt="legal"
-        width={500}
-        height={500}
-      />
+    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark">
+      <Button>Hello World</Button>
+      <h1>Hihi</h1>
     </div>
   );
 }
