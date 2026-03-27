@@ -18,7 +18,7 @@ export default async function BlogPostPage({params} : Props) {
     if (!post) {
         notFound()
     }
-
+    
     return (
         <div className='p-10 max-w-2xl mx-auto'>
             <Link href='/blog'>Quay lại</Link>
