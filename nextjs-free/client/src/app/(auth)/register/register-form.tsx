@@ -57,14 +57,14 @@ const RegisterForm = () => {
                 name="name"
                 render={({field, formState:{errors}}) => (
                     <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                        <Input placeholder="sonmcr" {...field}/>
-                    </FormControl>
-                    <FormDescription>
-                        {errors.name && <span className="text-red-500">{errors.name.message}</span>}
-                    </FormDescription>
-                    </FormItem>
+                        <FormLabel>Username</FormLabel>
+                        <FormControl>
+                            <Input placeholder="sonmcr" {...field}/>
+                        </FormControl>
+                        <FormDescription>
+                            {errors.name && <span className="text-red-500">{errors.name.message}</span>}
+                        </FormDescription>
+                    </FormItem> 
                 )}
             />
             <FormField
