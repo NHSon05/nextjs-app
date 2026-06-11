@@ -3,7 +3,13 @@ import { AuthError } from '@/utils/errors'
 import { FastifyRequest } from 'fastify'
 
 export const requireLoginedHook = async (request: FastifyRequest) => {
-  const sessionToken = request.cookies ? request.cookies.sessionToken : request.headers['sessionToken']
+  const authorization = request.headers['authorization']
+  let sessionToken = request.cookies?.sessionToken || (request.headers['sessiontoken'] as string)
+
+  if (!sessionToken && authorization && authorization.startsWith('Bearer ')) {
+    sessionToken = authorization.split(' ')[1]
+  }
+
   if (!sessionToken) throw new AuthError('Không nhận được session token')
   const session_row = await prisma.session.findUnique({
     where: {
