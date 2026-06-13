@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useAppContext } from '../AppProvider'
 import envConfig from '@/config'
 import { toast } from 'sonner'
@@ -20,22 +20,36 @@ import {
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import accountApiRequest from '../api-requests/account'
 
-interface ProfileProps {
-  user: {
-    id: number
-    name: string
-    email: string
-  } | null
-}
-
-export default function Profile({ user }: ProfileProps) {
+export default function Profile() {
   const { sessionToken } = useAppContext()
   const [activeTab, setActiveTab] = useState<'overview' | 'account'>('overview')
   
-  // Profile form state
-  const [name, setName] = useState(user?.name || '')
+  // States for dynamic user loading
+  const [user, setUser] = useState<{ id: number; name: string; email: string } | null>(null)
+  const [name, setName] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
   const [isUpdating, setIsUpdating] = useState(false)
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!sessionToken) return
+      try {
+        setIsLoading(true)
+        const result = await accountApiRequest.me(sessionToken)
+        const userData = result.payload.data
+        setUser(userData)
+        setName(userData.name)
+      } catch (error: any) {
+        console.error('Failed to load user profile:', error)
+        toast.error(error.message || 'Không thể tải thông tin hồ sơ')
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchProfile()
+  }, [sessionToken])
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -60,6 +74,8 @@ export default function Profile({ user }: ProfileProps) {
         throw new Error(payload.message || 'Cập nhật thất bại')
       }
 
+      // Update local state to reflect change instantly in dashboard banner
+      setUser(prev => prev ? { ...prev, name } : null)
       toast.success('Cập nhật hồ sơ thành công!')
     } catch (error: any) {
       toast.error(error.message || 'Có lỗi xảy ra')
@@ -69,8 +85,25 @@ export default function Profile({ user }: ProfileProps) {
     }
   }
 
+  if (isLoading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4">
+        <Loader2 className="h-8 w-8 animate-spin text-teal-600" />
+        <p className="text-sm text-slate-500 font-medium">Đang tải thông tin học viên...</p>
+      </div>
+    )
+  }
+
   if (!user) {
-    return <div className="text-center py-10">Không tìm thấy thông tin người dùng.</div>
+    return (
+      <div className="text-center py-12 bg-white dark:bg-slate-900 border border-border/40 rounded-3xl p-8 max-w-md mx-auto shadow-sm">
+        <ShieldAlert className="h-12 w-12 text-red-500 mx-auto mb-4" />
+        <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">Không tìm thấy thông tin</h3>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-2">
+          Vui lòng đăng nhập lại để truy cập phòng học.
+        </p>
+      </div>
+    )
   }
 
   return (
@@ -83,14 +116,14 @@ export default function Profile({ user }: ProfileProps) {
         
         <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-6">
           <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-3xl font-extrabold shadow-inner">
-            {name.charAt(0).toUpperCase()}
+            {user.name.charAt(0).toUpperCase()}
           </div>
           <div className="space-y-2 text-center sm:text-left">
             <div className="inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full bg-orange-500/20 border border-orange-500/30 text-orange-200 text-[11px] font-semibold uppercase tracking-wider">
               <Award className="h-3.5 w-3.5 text-orange-400 mr-1" />
               <span>Học viên Vàng</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">{name}</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">{user.name}</h2>
             <p className="text-teal-100/80 text-sm flex items-center justify-center sm:justify-start">
               <Mail className="h-4 w-4 mr-1.5 shrink-0" />
               {user.email}

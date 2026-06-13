@@ -1,6 +1,6 @@
 export async function POST(request: Request){
     const res = await request.json()
-    const sessionToken = res.payload?.data?.token
+    const sessionToken = res.sessionToken || res.payload?.data?.token
 
     if (!sessionToken) {
         return Response.json(
@@ -10,10 +10,13 @@ export async function POST(request: Request){
             }
         )
     }
-    return Response.json(res.payload,{
-        status: 200,
-        headers: {
-            'Set-Cookie': `sessionToken=${sessionToken}; Path=/; HttpOnly; SameSite=Lax`
+    return Response.json(
+        res.payload || { message: "Thành công", data: { token: sessionToken } },
+        {
+            status: 200,
+            headers: {
+                'Set-Cookie': `sessionToken=${sessionToken}; Path=/; HttpOnly; SameSite=Lax`
+            }
         }
-    })
+    )
 }
