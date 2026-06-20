@@ -15,8 +15,8 @@
 
 
 # Loại bỏ file Database SQLite local
-server/prisma/*.db
-server/prisma/*.db-journal
+/prisma/*.db
+/prisma/*.db-journal
 
 # Nếu bạn lưu file upload của user ở local
 /dist
