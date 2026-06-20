@@ -16,12 +16,11 @@ import { RegisterBody, RegisterBodyType } from "@/schemaValidations/auth.schema"
 import envConfig from "@/config"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { useAppContext } from "@/app/AppProvider"
 import { toast } from "sonner"
 import { Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react"
+import { sessionToken } from "@/lib/http"
 
 const RegisterForm = () => {   
-  const { setSessionToken } = useAppContext()
   const router = useRouter()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -83,7 +82,7 @@ const RegisterForm = () => {
 
       // 3. Set Context Token & Redirect
       const token = resultFromNextServer?.payload?.data?.token
-      setSessionToken(token)
+      sessionToken.value    = token.    
       toast.success('Đăng ký tài khoản thành công!')
       
       router.push('/me')

@@ -16,6 +16,21 @@ class HttpError extends Error {
     }
 }
 
+class SessionToken {
+    private token = ''
+    get value(){
+        return this.token
+    }
+    set value(token: string) {
+        if (typeof window === 'undefined') {
+            return
+        }
+        this.token = token
+    }
+}
+
+export const sessionToken = new SessionToken()
+
 const request = async <Response>(
     method: 'GET' | 'POST' | 'PUT' | 'DELETE',
     url: string,

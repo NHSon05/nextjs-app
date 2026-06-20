@@ -9,14 +9,11 @@ import { LoginBody, LoginBodyType, LoginResType } from '@/schemaValidations/auth
 import { zodResolver } from '@hookform/resolvers/zod'
 import React from 'react'
 import { useForm } from 'react-hook-form'
-import { useAppContext } from '@/app/AppProvider'
 import authApiRequest from '@/app/api-requests/auth'
-import { useRouter } from 'next/navigation'
+import { sessionToken } from '@/lib/http'
 
-export default function LoginForm() {    
-
-    const {setSessionToken } = useAppContext()
-    const router = useRouter()
+export default function LoginForm() {      
+  
     const form = useForm<LoginBodyType>({
         resolver: zodResolver(LoginBody),
         defaultValues: {
@@ -29,8 +26,7 @@ export default function LoginForm() {
         try {
             const result = await authApiRequest.login(values)
             await authApiRequest.auth({sessionToken: result.payload.data.token})
-            setSessionToken(result.payload.data.token)
-            router.push('/me')
+            sessionToken.value = result.payload.data.token
         } catch (error: any) {
             console.log(error);
             const errors = error.payload.errors as { field: string, message:string}[]

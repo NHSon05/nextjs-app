@@ -3,14 +3,13 @@
 import React from 'react'
 import { ModeToggle } from './toggle-theme'
 import Link from 'next/link'
-import { useAppContext } from '@/app/AppProvider'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { GraduationCap, LogOut, User, LayoutDashboard, Home, BookOpen } from 'lucide-react'
 import { Button } from './ui/button'
+import { sessionToken } from '@/lib/http'
 
 export default function Header() {
-  const { sessionToken, setSessionToken } = useAppContext()
   const router = useRouter()
 
   const handleLogout = async () => {
@@ -18,7 +17,7 @@ export default function Header() {
       await fetch('/api/auth/logout', {
         method: 'POST',
       })
-      setSessionToken('')
+      sessionToken.value =' '
       toast.success('Đăng xuất thành công')
       router.push('/login')
       router.refresh()

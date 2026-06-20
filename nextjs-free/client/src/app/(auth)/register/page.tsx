@@ -21,7 +21,7 @@ export default function RegisterPage() {
           Tạo tài khoản để bắt đầu hành trình học tập Next.js chuyên nghiệp
         </p>
       </div>
-
+ 
       {/* Register Card Form wrapper */}
       <div className="bg-white dark:bg-slate-900 p-8 rounded-2xl border border-border/40 shadow-md">
         <RegisterForm />

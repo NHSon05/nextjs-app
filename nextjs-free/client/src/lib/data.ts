@@ -52,3 +52,40 @@ export const websites = [
     description: 'An instant messaging software service and web portal.'
   }
 ]
+
+
+// src/lib/data.ts
+
+// Khai báo kiểu dữ liệu cho bài viết
+export interface Post {
+  id: string;
+  slug: string;
+  title: string;
+  content: string;
+  category: string;
+}
+
+// Khởi tạo mảng chứa dữ liệu giả lập giống như một Database thu nhỏ
+export const POSTS: Post[] = [
+  {
+    id: "1",
+    slug: "huong-dan-nextjs-15",
+    title: "Lộ trình học Next.js 15 cho người mới",
+    content: "Next.js 15 mang đến nhiều thay đổi về Async Params, React 19 và Server Actions cực kỳ mạnh mẽ...",
+    category: "Tech"
+  },
+  {
+    id: "2",
+    slug: "typescript-nang-cao",
+    title: "Làm chủ TypeScript trong dự án thực tế",
+    content: "TypeScript không chỉ là thêm type, nó giúp bạn hạn chế tới 90% lỗi vặt khi viết code JavaScript...",
+    category: "Programming"
+  },
+  {
+    id: "3",
+    slug: "tailwind-css-tips",
+    title: "10 mẹo dùng Tailwind CSS cực hay",
+    content: "Tailwind giúp bạn code giao diện nhanh gấp 3 lần bình thường nhờ hệ thống utility classes...",
+    category: "Frontend"
+  }
+];

@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from 'react'
-import { useAppContext } from '../AppProvider'
 import envConfig from '@/config'
 import { toast } from 'sonner'
 import { 
@@ -21,9 +20,9 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import accountApiRequest from '../api-requests/account'
+import { sessionToken } from '@/lib/http'
 
 export default function Profile() {
-  const { sessionToken } = useAppContext()
   const [activeTab, setActiveTab] = useState<'overview' | 'account'>('overview')
   
   // States for dynamic user loading
@@ -34,10 +33,10 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!sessionToken) return
-      try {
+      if (!sessionToken ) return
+      try { 
         setIsLoading(true)
-        const result = await accountApiRequest.me(sessionToken)
+        const result = await accountApiRequest.me(sessionToken.value)
         const userData = result.payload.data
         setUser(userData)
         setName(userData.name)
@@ -49,7 +48,7 @@ export default function Profile() {
       }
     }
     fetchProfile()
-  }, [sessionToken])
+  }, [  ])
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault()
