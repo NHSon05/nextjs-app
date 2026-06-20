@@ -3,7 +3,7 @@ import Profile from './profile'
 import { redirect } from 'next/navigation'
 
 export default async function MeProfile() {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
   const sessionToken = cookieStore.get('sessionToken')
 
   if (!sessionToken?.value) {

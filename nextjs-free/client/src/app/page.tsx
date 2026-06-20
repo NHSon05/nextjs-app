@@ -14,8 +14,8 @@ import {
   Code2, 
 } from 'lucide-react'
 
-export default function Home() {
-  const cookieStore = cookies()
+export default async function Home() {
+  const cookieStore = await cookies()
   const sessionToken = cookieStore.get('sessionToken')
   const isLoggedIn = !!sessionToken?.value
 

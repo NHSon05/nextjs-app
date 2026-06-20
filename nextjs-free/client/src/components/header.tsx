@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import { ModeToggle } from './toggle-theme'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -11,26 +11,35 @@ import { sessionToken } from '@/lib/http'
 
 export default function Header() {
   const router = useRouter()
+  const [isLogginOut, setIsLoggingout] = useState(false)
 
   const handleLogout = async () => {
+    setIsLoggingout(true)
     try {
-      await fetch('/api/auth/logout', {
-        method: 'POST',
+      const res = await fetch('/api/auth/logout', {
+        method: 'POST'
       })
-      sessionToken.value =' '
-      toast.success('Đăng xuất thành công')
-      router.push('/login')
-      router.refresh()
+      if (res.ok) {
+        sessionToken.value = ""
+        router.push('/login')
+        router.refresh()
+      } else {
+        alert("Đăng xuất thât bại")
+      }
     } catch (error) {
       toast.error('Có lỗi xảy ra khi đăng xuất')
       console.error(error)
+    } finally {
+      setIsLoggingout(false)
     }
   }
 
+
+  const token = sessionToken.value
+  console.log(token)
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        
         {/* Brand Logo */}
         <Link href="/" className="flex items-center space-x-2 text-primary hover:opacity-95 transition-opacity">
           <GraduationCap className="h-8 w-8 text-teal-600 dark:text-teal-400" />
@@ -49,7 +58,7 @@ export default function Header() {
             <BookOpen className="h-4 w-4" />
             <span>Khóa học</span>
           </Link>
-          {sessionToken && (
+          {token && (
             <Link href="/me" className="flex items-center space-x-1 text-foreground/80 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
               <LayoutDashboard className="h-4 w-4" />
               <span>Học tập</span>
@@ -61,7 +70,7 @@ export default function Header() {
         <div className="flex items-center space-x-4">
           <ModeToggle />
           
-          {sessionToken ? (
+          {token ? (
             <div className="flex items-center space-x-3">
               <Button asChild variant="outline" size="sm" className="hidden sm:flex items-center space-x-1 border-teal-600/30 hover:bg-teal-50 dark:hover:bg-teal-950/20 text-teal-700 dark:text-teal-300">
                 <Link href="/me">
