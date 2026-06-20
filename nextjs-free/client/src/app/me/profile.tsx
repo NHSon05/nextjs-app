@@ -20,10 +20,11 @@ import {
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import accountApiRequest from '../api-requests/account'
-import { sessionToken } from '@/lib/http'
+import { useAppContext } from '@/app/AppProvider'
 
 export default function Profile() {
   const [activeTab, setActiveTab] = useState<'overview' | 'account'>('overview')
+  const { sessionToken } = useAppContext()
   
   // States for dynamic user loading
   const [user, setUser] = useState<{ id: number; name: string; email: string } | null>(null)
@@ -33,10 +34,10 @@ export default function Profile() {
 
   useEffect(() => {
     const fetchProfile = async () => {
-      if (!sessionToken ) return
+      if (!sessionToken) return
       try { 
         setIsLoading(true)
-        const result = await accountApiRequest.me(sessionToken.value)
+        const result = await accountApiRequest.me(sessionToken)
         const userData = result.payload.data
         setUser(userData)
         setName(userData.name)

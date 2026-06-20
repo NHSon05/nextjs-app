@@ -10,12 +10,13 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import authApiRequest from '@/app/api-requests/auth'
-import { sessionToken } from '@/lib/http'
+import { useAppContext } from '@/app/AppProvider'
 import { redirect, useRouter } from 'next/navigation'
 
 export default function LoginForm() {      
 
     const router = useRouter()
+    const { setSessionToken } = useAppContext()
   
     const form = useForm<LoginBodyType>({
         resolver: zodResolver(LoginBody),
@@ -29,12 +30,12 @@ export default function LoginForm() {
         try {
             const result = await authApiRequest.login(values)
             await authApiRequest.auth({sessionToken: result.payload.data.token})
-            sessionToken.value = result.payload.data.token
+            setSessionToken(result.payload.data.token)
             router.push('/')
             router.refresh()
         } catch (error: any) {
             console.log(error);
-            const errors = error.payload as { field: string, message:string}[]
+            const errors = error.payload.errors as { field: string, message:string}[]
             const status = error.status as number
             if (status == 422){
                 errors.forEach((error) => {

@@ -35,8 +35,8 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <Header/>
             <AppProvider initialSessionToken={sessionToken?.value}>
+              <Header/>
               {children}
             </AppProvider>
           </ThemeProvider>

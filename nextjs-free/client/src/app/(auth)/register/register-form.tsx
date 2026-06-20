@@ -18,10 +18,11 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { Eye, EyeOff, Loader2, Lock, Mail, User } from "lucide-react"
-import { sessionToken } from "@/lib/http"
+import { useAppContext } from "@/app/AppProvider"
 
 const RegisterForm = () => {   
   const router = useRouter()
+  const { setSessionToken } = useAppContext()
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
@@ -49,7 +50,7 @@ const RegisterForm = () => {
 
       // 3. Set token trong context và chuyển hướng
       const token = result.payload.data.token
-      sessionToken.value = token
+      setSessionToken(token)
       toast.success('Đăng ký tài khoản thành công!')
       
       router.push('/me')

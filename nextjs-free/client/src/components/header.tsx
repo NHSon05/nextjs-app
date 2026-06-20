@@ -7,11 +7,12 @@ import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 import { GraduationCap, LogOut, User, LayoutDashboard, Home, BookOpen } from 'lucide-react'
 import { Button } from './ui/button'
-import { sessionToken } from '@/lib/http'
+import { useAppContext } from '@/app/AppProvider'
 
 export default function Header() {
   const router = useRouter()
   const [isLogginOut, setIsLoggingout] = useState(false)
+  const { sessionToken, setSessionToken } = useAppContext()
 
   const handleLogout = async () => {
     setIsLoggingout(true)
@@ -20,7 +21,7 @@ export default function Header() {
         method: 'POST'
       })
       if (res.ok) {
-        sessionToken.value = ""
+        setSessionToken("")
         router.push('/login')
         router.refresh()
       } else {
@@ -35,7 +36,7 @@ export default function Header() {
   }
 
 
-  const token = sessionToken.value
+  const token = sessionToken
   console.log(token)
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/90 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
