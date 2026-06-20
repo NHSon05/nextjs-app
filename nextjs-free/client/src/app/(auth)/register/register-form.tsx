@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { RegisterBody, RegisterBodyType } from "@/schemaValidations/auth.schema"
-import envConfig from "@/config"
+import authApiRequest from "@/app/api-requests/auth"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { toast } from "sonner"
@@ -39,50 +39,17 @@ const RegisterForm = () => {
 
   async function onSubmit(values: RegisterBodyType) {
     try {
-      // 1. Call Backend Registration Endpoint
-      const result = await fetch(
-        `${envConfig.NEXT_PUBLIC_API_ENDPOINT}/auth/register`, 
-        {
-          body: JSON.stringify(values), 
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          method: 'POST'
-        }
-      ).then(async (res) => {
-        const payload = await res.json()
-        const data = {
-          status: res.status,
-          payload
-        }
-        if (!res.ok) {
-          throw data
-        }
-        return data
+      // 1. Gọi API đăng ký từ helper
+      const result = await authApiRequest.register(values)
+
+      // 2. Ghi session token vào cookie bằng route local /api/auth
+      await authApiRequest.auth({
+        sessionToken: result.payload.data.token
       })
 
-      // 2. Call Next Server handler to write cookie
-      const resultFromNextServer = await fetch('/api/auth', {
-        method: 'POST',
-        body: JSON.stringify(result),
-        headers: {
-          'Content-Type': 'application/json'
-        },
-      }).then(async (res) => {
-        const payload = await res.json()
-        const data = {
-          status: res.status,
-          payload
-        }
-        if (!res.ok) {
-          throw data
-        }
-        return data
-      })
-
-      // 3. Set Context Token & Redirect
-      const token = resultFromNextServer?.payload?.data?.token
-      sessionToken.value    = token.    
+      // 3. Set token trong context và chuyển hướng
+      const token = result.payload.data.token
+      sessionToken.value = token
       toast.success('Đăng ký tài khoản thành công!')
       
       router.push('/me')
